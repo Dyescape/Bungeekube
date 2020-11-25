@@ -25,6 +25,13 @@
             <version>1.16-R0.4-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Internal modules -->
+        <dependency>
+            <groupId>com.dyescape.bungeekube</groupId>
+            <artifactId>kubernetes</artifactId>
+            <version>${project-version}</version>
+        </dependency>
     </dependencies>
 
     <build>
