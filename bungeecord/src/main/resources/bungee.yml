@@ -1,0 +1,6 @@
+name: ${project.parent.name}
+version: ${project-version}
+main: com.dyescape.bungeekube.bungeecord.Bungeekube
+website: ${project.url}
+author: ${project-author}
+description: ${project.description}
