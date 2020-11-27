@@ -7,7 +7,7 @@ public class DiscoveredService {
     private final int port;
 
     public DiscoveredService(String name, String host, int port) {
-        this.name = name;
+        this.name = name != null && !name.isEmpty() ? name : String.format("%s:%s", host, port);
         this.host = host;
         this.port = port;
     }

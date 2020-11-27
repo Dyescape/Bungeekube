@@ -1,11 +1,9 @@
 package com.dyescape.bungeekube.kubernetes.discovery;
 
 import com.dyescape.bungeekube.kubernetes.discovery.exception.IllegalPortSetupException;
-
 import io.fabric8.kubernetes.api.model.ContainerPort;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.PodList;
-import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
 
 import java.util.List;
@@ -20,21 +18,16 @@ public class KubernetesServiceDiscovery implements ServiceDiscovery {
 
     private static final Logger LOGGER = Logger.getLogger("Bungeekube");
 
-    private KubernetesClient client;
+    private final KubernetesClient client;
+
+    public KubernetesServiceDiscovery(KubernetesClient client) {
+        this.client = client;
+    }
 
     @Override
     public List<DiscoveredService> Discover() {
-        if (this.client == null) {
-            LOGGER.info("Initialising Kubernetes client. This may take a few seconds...");
-            this.initialiseClient();
-        }
-
         PodList podList = this.getAllPods();
         return this.getBackendServicesFromPodList(podList);
-    }
-
-    private void initialiseClient() {
-        this.client = this.createKubernetesClient();
     }
 
     private int getBackendPortFromPod(Pod pod) {
@@ -96,10 +89,6 @@ public class KubernetesServiceDiscovery implements ServiceDiscovery {
                 .list();
     }
 
-    private KubernetesClient createKubernetesClient() {
-        return new DefaultKubernetesClient();
-    }
-
     private boolean isBackendServer(Pod pod) {
         Map<String, String> annotations = pod.getMetadata().getAnnotations();
         if (annotations == null || annotations.isEmpty()) {
@@ -119,6 +108,6 @@ public class KubernetesServiceDiscovery implements ServiceDiscovery {
 
     private void logPodMissingAnnotation(Pod pod) {
         LOGGER.fine(String.format("Ignoring pod %s in namespace %s because it has does not have the %s: 'true'" +
-                        "annotation", pod.getMetadata().getName(), pod.getMetadata().getNamespace(), BASE_ANNOTATION));
+                "annotation", pod.getMetadata().getName(), pod.getMetadata().getNamespace(), BASE_ANNOTATION));
     }
 }

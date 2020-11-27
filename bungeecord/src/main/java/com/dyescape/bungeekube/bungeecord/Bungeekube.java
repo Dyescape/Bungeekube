@@ -4,6 +4,8 @@ import com.dyescape.bungeekube.kubernetes.discovery.DiscoveredService;
 import com.dyescape.bungeekube.kubernetes.discovery.KubernetesServiceDiscovery;
 import com.dyescape.bungeekube.kubernetes.discovery.ServiceDiscovery;
 
+import io.fabric8.kubernetes.client.DefaultKubernetesClient;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import net.md_5.bungee.api.plugin.Plugin;
 
 import java.util.List;
@@ -17,7 +19,7 @@ public class Bungeekube extends Plugin {
     public void onEnable() {
         this.initialiseLogging();
 
-        ServiceDiscovery discovery = new KubernetesServiceDiscovery();
+        ServiceDiscovery discovery = new KubernetesServiceDiscovery(this.createKubernetesClient());
         List<DiscoveredService> foundServices = discovery.Discover();
 
         if (!foundServices.isEmpty()) {
@@ -28,6 +30,11 @@ public class Bungeekube extends Plugin {
             LOGGER.info(String.format("  - %s:%s (%s)", discoveredService.getHost(), discoveredService.getPort(),
                     discoveredService.getName()));
         }
+    }
+
+    private KubernetesClient createKubernetesClient() {
+        LOGGER.info("Initialising Kubernetes client. This may take a few seconds...");
+        return new DefaultKubernetesClient();
     }
 
     private void initialiseLogging() {
