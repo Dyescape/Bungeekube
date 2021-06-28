@@ -16,7 +16,7 @@
     </modules>
 
     <name>Bungeekube</name>
-    <description>Bungeecord (or fork of) plugin to support Kubernetes service discovery and configuration</description>
+    <description>Bungeecord and Velocity plugin to support Kubernetes service discovery and configuration</description>
     <url>github.com/Dyescape/Bungeekube</url>
 
     <properties>
