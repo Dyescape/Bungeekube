@@ -23,26 +23,26 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class KubernetesServiceDiscoveryTest {
 
-    private KubernetesClient client;
     private KubernetesServiceDiscovery discovery;
-    private MixedOperation<Pod, PodList, DoneablePod, PodResource<Pod, DoneablePod>> mixedOperationMock;
     private FilterWatchListMultiDeletable<Pod, PodList, Boolean, Watch> filter;
 
     @BeforeEach
     protected void setup() {
-        client = mock(KubernetesClient.class);
-        this.discovery = new KubernetesServiceDiscovery(this.client);
+        KubernetesClient client = mock(KubernetesClient.class);
+        this.discovery = new KubernetesServiceDiscovery(client, new KubernetesPodMapper());
 
-        mixedOperationMock = mock(MixedOperation.class);
-        when(this.client.pods()).thenReturn(this.mixedOperationMock);
+        MixedOperation<Pod, PodList, DoneablePod, PodResource<Pod, DoneablePod>> mixedOperationMock = mock(MixedOperation.class);
+        when(client.pods()).thenReturn(mixedOperationMock);
 
         filter = mock(FilterWatchListMultiDeletable.class);
-        when(this.mixedOperationMock.inAnyNamespace()).thenReturn(this.filter);
+        when(mixedOperationMock.inAnyNamespace()).thenReturn(this.filter);
+        when(filter.withLabel(anyString(), anyString())).thenReturn(this.filter);
     }
 
     @Test
@@ -71,7 +71,7 @@ public class KubernetesServiceDiscoveryTest {
     public void testDiscover_AnnotatedNotEnoughPorts() {
 
         Pod pod = this.createEmptyPod();
-        pod.getMetadata().getAnnotations().put(KubernetesServiceDiscovery.BASE_ANNOTATION, "true");
+        pod.getMetadata().getAnnotations().put(KubernetesPodMapper.BASE_ANNOTATION, "true");
         this.initialisePodListMock(pod);
 
         assertTrue(this.discovery.Discover().isEmpty());
@@ -82,7 +82,7 @@ public class KubernetesServiceDiscoveryTest {
     public void testDiscover_AnnotatedTooManyPorts() {
 
         Pod pod = this.createEmptyPod();
-        pod.getMetadata().getAnnotations().put(KubernetesServiceDiscovery.BASE_ANNOTATION, "true");
+        pod.getMetadata().getAnnotations().put(KubernetesPodMapper.BASE_ANNOTATION, "true");
         ContainerPort port = new ContainerPort();
         port.setContainerPort(25565);
 
@@ -101,7 +101,7 @@ public class KubernetesServiceDiscoveryTest {
     public void testDiscover_AnnotatedNoApplicablePort() {
 
         Pod pod = this.createEmptyPod();
-        pod.getMetadata().getAnnotations().put(KubernetesServiceDiscovery.BASE_ANNOTATION, "true");
+        pod.getMetadata().getAnnotations().put(KubernetesPodMapper.BASE_ANNOTATION, "true");
         ContainerPort port = new ContainerPort();
         port.setContainerPort(1234);
         port.setName("my-port");
@@ -120,7 +120,7 @@ public class KubernetesServiceDiscoveryTest {
     public void testDiscover_AnnotatedCorrectNamedPort() {
 
         Pod pod = this.createEmptyPod();
-        pod.getMetadata().getAnnotations().put(KubernetesServiceDiscovery.BASE_ANNOTATION, "true");
+        pod.getMetadata().getAnnotations().put(KubernetesPodMapper.BASE_ANNOTATION, "true");
         ContainerPort port = new ContainerPort();
         port.setContainerPort(1234);
         port.setName("minecraft");
@@ -139,7 +139,7 @@ public class KubernetesServiceDiscoveryTest {
     public void testDiscover_AnnotatedCorrectPortNumber() {
 
         Pod pod = this.createEmptyPod();
-        pod.getMetadata().getAnnotations().put(KubernetesServiceDiscovery.BASE_ANNOTATION, "true");
+        pod.getMetadata().getAnnotations().put(KubernetesPodMapper.BASE_ANNOTATION, "true");
         ContainerPort port = new ContainerPort();
         port.setContainerPort(25565);
         port.setName("something");

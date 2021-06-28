@@ -20,7 +20,7 @@ headless service scanning, then pod scanning can be disabled and the permission 
 ```yaml
 ---
 kind: Role
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: minecraft-proxy
   namespace: minecraft
@@ -36,7 +36,7 @@ rules:
       - watch
 ---
 kind: RoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: minecraft-proxy
   namespace: minecraft
@@ -92,8 +92,7 @@ spec:
     metadata:
       labels:
         component: minecraft-server
-      annotations:
-        bungeekube.dyescape.com: 'true' # <---
+        bungeekube.dyescape.com/enabled: 'true' # <--- Important!
     spec:
       containers:
       - name: minecraft-software
@@ -113,8 +112,8 @@ kind: Service
 metadata:
   name: minecraft-server
   namespace: minecraft
-  annotations:
-    bungeekube.dyescape.com: 'true' # <---
+  labels:
+    bungeekube.dyescape.com/enabled: 'true' # <--- Important!
 spec:
   clusterIP: None # <---
   selector:

@@ -1,8 +1,11 @@
 package com.dyescape.bungeekube.bungeecord;
 
+import com.dyescape.bungeekube.bungeecord.watcher.BungeeDiscoveryWatcher;
 import com.dyescape.bungeekube.kubernetes.discovery.DiscoveredService;
+import com.dyescape.bungeekube.kubernetes.discovery.KubernetesPodMapper;
 import com.dyescape.bungeekube.kubernetes.discovery.KubernetesServiceDiscovery;
 import com.dyescape.bungeekube.kubernetes.discovery.ServiceDiscovery;
+import com.dyescape.bungeekube.kubernetes.discovery.watcher.KubernetesDiscoveryWatcher;
 
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
@@ -10,7 +13,9 @@ import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.plugin.Plugin;
 
 import java.net.InetSocketAddress;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class Bungeekube extends Plugin {
@@ -21,21 +26,32 @@ public class Bungeekube extends Plugin {
     public void onEnable() {
         this.initialiseLogging();
 
-        ServiceDiscovery discovery = new KubernetesServiceDiscovery(this.createKubernetesClient());
+        KubernetesClient client = this.createKubernetesClient();
+        KubernetesPodMapper mapper = new KubernetesPodMapper();
+
+        ServiceDiscovery discovery = new KubernetesServiceDiscovery(client, mapper);
+        BungeeDiscoveryWatcher watcher = new BungeeDiscoveryWatcher(this.getProxy());
+
         List<DiscoveredService> foundServices = discovery.Discover();
 
         if (!foundServices.isEmpty()) {
-            LOGGER.info("Discovered these services:");
+            LOGGER.info("Discovered these pods:");
         } else {
-            LOGGER.warning("No services found! Did you follow the installation manual?");
+            LOGGER.warning("No pods found! Did you follow the installation manual?");
         }
 
-        for (DiscoveredService service : discovery.Discover()) {
+        Set<String> foundPods = new HashSet<>();
+
+        for (DiscoveredService service : foundServices) {
             LOGGER.info(String.format("  - %s:%s (%s)", service.getHost(), service.getPort(),
                     service.getName()));
 
+            foundPods.add(service.getHost());
+
             this.registerServer(service);
         }
+
+        new KubernetesDiscoveryWatcher(client, watcher, mapper, foundPods).startListening();
     }
 
     private void registerServer(DiscoveredService service) {
