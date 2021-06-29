@@ -16,6 +16,12 @@
             <artifactId>bungeecord</artifactId>
             <version>${parent.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.dyescape.bungeekube</groupId>
+            <artifactId>velocity</artifactId>
+            <version>${parent.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

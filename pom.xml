@@ -13,6 +13,7 @@
         <module>bungeecord</module>
         <module>assembly</module>
         <module>kubernetes</module>
+        <module>velocity</module>
     </modules>
 
     <name>Bungeekube</name>

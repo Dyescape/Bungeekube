@@ -1,5 +1,5 @@
 # Bungeekube
-Bungeecord plugin to support Kubernetes service discovery and configuration.
+Bungeecord & Velocity plugin to support Kubernetes service discovery and configuration.
 
 ## How it works
 The plugin utilises the Kubernetes API to search for applicable fallback servers that can be configured in the
@@ -9,11 +9,11 @@ services.
 ## Installation
 Below are the installation steps necessary to set up this software.
 
-### 1) Bungeecord
-First, simply drag and drop the plugin Jar into the plugins folder of Bungeecord.
+### 1) Proxy (Bungeecord, Velocity)
+First, simply drag and drop the plugin Jar into the plugins folder.
 
 ### 2) RBAC permissions
-Now it's time to create a new role for the Bungeecord pod. These permissions are necessary as the plugin needs to use
+Now it's time to create a new role for the proxy pod. These permissions are necessary as the plugin needs to use
 the Kubernetes API to search for fallback pods or headless services. The below example can be used for reference.
 Depending on what you configure in the plugin, either the pod or service permission can be removed. If you enable
 headless service scanning, then pod scanning can be disabled and the permission can be removed here, and visa versa.
@@ -126,7 +126,7 @@ spec:
 ```
 
 ## Usage
-The plugin is designed to automatically find and register discovered fallback services into the running Bungeecord
+The plugin is designed to automatically find and register discovered fallback services into the running proxy
 instance. The configuration can be changed according to your needs and setup. See the below reference.
 ```yaml
 discovery:
