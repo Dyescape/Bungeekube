@@ -100,6 +100,7 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 25565
+          name: minecraft  # <--- Important!
 ```
 
 #### Annotated headless service
