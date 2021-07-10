@@ -6,6 +6,15 @@ The plugin utilises the Kubernetes API to search for applicable fallback servers
 Bungeecord server that this plugin is installed on. Discovery can be done either by watching pods or headless
 services.
 
+# Project state
+The below  table should give you a quick overview of the stability and usability of this software, and whether or
+not you should run this in production.
+
+| Proxy software | Project phase  |
+|----------------|----------------|
+| Velocity       | Alpha          |
+| Bungeecord     | In development |
+
 ## Installation
 Below are the installation steps necessary to set up this software.
 
