@@ -1,8 +1,8 @@
 package com.dyescape.bungeekube.kubernetes.discovery;
 
-import java.util.List;
+import java.util.Set;
 
 public interface ServiceDiscovery {
 
-    List<DiscoveredService> Discover();
+    Set<DiscoveredService> Discover();
 }

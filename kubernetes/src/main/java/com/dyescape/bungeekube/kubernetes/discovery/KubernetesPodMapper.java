@@ -4,10 +4,12 @@ import com.dyescape.bungeekube.kubernetes.discovery.exception.IllegalPortSetupEx
 
 import io.fabric8.kubernetes.api.model.ContainerPort;
 import io.fabric8.kubernetes.api.model.Pod;
+import io.fabric8.kubernetes.api.model.PodCondition;
 import io.fabric8.kubernetes.api.model.PodList;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -48,11 +50,24 @@ public class KubernetesPodMapper {
         return 0;
     }
 
-    public List<DiscoveredService> getBackendServicesFromPodList(PodList podList) {
+    public Set<DiscoveredService> getBackendServicesFromPodList(PodList podList) {
         return podList.getItems().stream()
+                .filter(this::isReady)
                 .map(this::tryGetPodAsDiscoveredService)
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
+    }
+
+    private boolean isReady(Pod pod) {
+        for (PodCondition condition : pod.getStatus().getConditions()) {
+            if (!condition.getType().equalsIgnoreCase("ready")) {
+                if (!condition.getStatus().equalsIgnoreCase("true")) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     private DiscoveredService tryGetPodAsDiscoveredService(Pod pod) {

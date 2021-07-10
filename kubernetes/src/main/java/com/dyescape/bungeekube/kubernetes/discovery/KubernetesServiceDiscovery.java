@@ -3,7 +3,7 @@ package com.dyescape.bungeekube.kubernetes.discovery;
 import io.fabric8.kubernetes.api.model.PodList;
 import io.fabric8.kubernetes.client.KubernetesClient;
 
-import java.util.List;
+import java.util.Set;
 
 public class KubernetesServiceDiscovery implements ServiceDiscovery {
 
@@ -16,7 +16,7 @@ public class KubernetesServiceDiscovery implements ServiceDiscovery {
     }
 
     @Override
-    public List<DiscoveredService> Discover() {
+    public Set<DiscoveredService> Discover() {
         PodList podList = this.getAllPods();
         return this.podMapper.getBackendServicesFromPodList(podList);
     }

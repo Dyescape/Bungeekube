@@ -1,5 +1,7 @@
 package com.dyescape.bungeekube.kubernetes.discovery;
 
+import java.util.Objects;
+
 public class DiscoveredService {
 
     private final String name;
@@ -22,5 +24,18 @@ public class DiscoveredService {
 
     public int getPort() {
         return this.port;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DiscoveredService that = (DiscoveredService) o;
+        return port == that.port && Objects.equals(name, that.name) && Objects.equals(host, that.host);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, host, port);
     }
 }
