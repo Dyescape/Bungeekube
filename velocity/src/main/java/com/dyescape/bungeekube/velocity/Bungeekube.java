@@ -4,6 +4,8 @@ import com.dyescape.bungeekube.kubernetes.discovery.KubernetesPodMapper;
 import com.dyescape.bungeekube.kubernetes.discovery.KubernetesServiceDiscovery;
 import com.dyescape.bungeekube.kubernetes.discovery.ServiceDiscovery;
 import com.dyescape.bungeekube.kubernetes.discovery.watcher.KubernetesDiscoveryWatcher;
+import com.dyescape.bungeekube.velocity.balancer.LoadBalancerListener;
+import com.dyescape.bungeekube.velocity.registry.ServerRegistry;
 import com.dyescape.bungeekube.velocity.watcher.VelocityDiscoveryWatcher;
 
 import com.google.inject.Inject;
@@ -23,6 +25,7 @@ public class Bungeekube {
     private final ProxyServer server;
     private final Logger logger;
 
+    private final ServerRegistry serverRegistry;
     private final KubernetesDiscoveryWatcher watcher;
 
     @Inject
@@ -34,7 +37,9 @@ public class Bungeekube {
         KubernetesPodMapper mapper = new KubernetesPodMapper();
 
         ServiceDiscovery discovery = new KubernetesServiceDiscovery(client, mapper);
-        VelocityDiscoveryWatcher watcher = new VelocityDiscoveryWatcher(server);
+        this.serverRegistry = new ServerRegistry();
+
+        VelocityDiscoveryWatcher watcher = new VelocityDiscoveryWatcher(serverRegistry, server);
 
         this.watcher = new KubernetesDiscoveryWatcher(discovery, watcher);
         this.watcher.scan();
@@ -42,6 +47,10 @@ public class Bungeekube {
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
+
+        LoadBalancerListener listener = new LoadBalancerListener(server, serverRegistry, logger);
+        server.getEventManager().register(this, listener);
+
         this.server.getScheduler().buildTask(this, this.watcher::scan)
                 .delay(10L, TimeUnit.SECONDS)
                 .repeat(10L, TimeUnit.SECONDS)
