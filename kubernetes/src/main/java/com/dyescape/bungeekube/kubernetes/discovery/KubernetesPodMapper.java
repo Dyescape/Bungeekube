@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 public class KubernetesPodMapper {
 
     public static final String BASE_ANNOTATION = "bungeekube.dyescape.com/enabled";
+    public static final String DEFAULT_ANNOTATION = "bungeekube.dyescape.com/default";
 
     private static final Logger LOGGER = Logger.getLogger("Bungeekube");
 
@@ -81,6 +82,7 @@ public class KubernetesPodMapper {
 
     private DiscoveredService getPodAsDiscoveredService(Pod pod) {
         return new DiscoveredService(pod.getMetadata().getName(), pod.getStatus().getPodIP(),
-                getBackendPortFromPod(pod));
+                getBackendPortFromPod(pod), pod.getMetadata().getLabels() != null &&
+                pod.getMetadata().getLabels().containsKey(DEFAULT_ANNOTATION));
     }
 }

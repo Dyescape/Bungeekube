@@ -79,9 +79,10 @@ identified by name as only IP addresses will be returned by this headless servic
 
 Below is a simple table listing all possible annotations and their functionality.
 
-| Annotation                                   | Description                                                        |
-| ---------------------------------------------| ------------------------------------------------------------------ |
-| `bungeekube.dyescape.com/enabled: 'true'`    | Base annotation to mark services or pods applicable for discovery. |
+| Annotation                                   | Description                                                                               |
+| ---------------------------------------------| ----------------------------------------------------------------------------------------- |
+| `bungeekube.dyescape.com/enabled: 'true'`    | Base annotation to mark services or pods applicable for discovery.                        |
+| `bungeekube.dyescape.com/default: 'true'`    | Mark the server as a default, a server which players are sent to upon initial connection. |
 
 #### Annotated pod
 Below we have an example of a StatefulSet which complies with this plugin. Note that only the template annotations are
