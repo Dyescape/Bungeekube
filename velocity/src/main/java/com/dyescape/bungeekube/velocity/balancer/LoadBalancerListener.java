@@ -1,8 +1,9 @@
 package com.dyescape.bungeekube.velocity.balancer;
 
+import com.dyescape.bungeekube.api.registry.ServerRegistry;
 import com.dyescape.bungeekube.kubernetes.discovery.DiscoveredService;
-import com.dyescape.bungeekube.velocity.registry.ServerRegistry;
 
+import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.PlayerChooseInitialServerEvent;
 import com.velocitypowered.api.proxy.ProxyServer;
@@ -29,7 +30,7 @@ public class LoadBalancerListener {
         this.logger = logger;
     }
 
-    @Subscribe
+    @Subscribe(order = PostOrder.LATE)
     public void onJoin(PlayerChooseInitialServerEvent e) {
         DiscoveredService random = random(this.serverRegistry.getRegisteredDefaultServers());
         if (random == null) {

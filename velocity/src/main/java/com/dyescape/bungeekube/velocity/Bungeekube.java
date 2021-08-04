@@ -5,7 +5,7 @@ import com.dyescape.bungeekube.kubernetes.discovery.KubernetesServiceDiscovery;
 import com.dyescape.bungeekube.kubernetes.discovery.ServiceDiscovery;
 import com.dyescape.bungeekube.kubernetes.discovery.watcher.KubernetesDiscoveryWatcher;
 import com.dyescape.bungeekube.velocity.balancer.LoadBalancerListener;
-import com.dyescape.bungeekube.velocity.registry.ServerRegistry;
+import com.dyescape.bungeekube.api.registry.ServerRegistry;
 import com.dyescape.bungeekube.velocity.watcher.VelocityDiscoveryWatcher;
 
 import com.google.inject.Inject;
@@ -37,7 +37,7 @@ public class Bungeekube {
         KubernetesPodMapper mapper = new KubernetesPodMapper();
 
         ServiceDiscovery discovery = new KubernetesServiceDiscovery(client, mapper);
-        this.serverRegistry = new ServerRegistry();
+        this.serverRegistry = ServerRegistry.get();
 
         VelocityDiscoveryWatcher watcher = new VelocityDiscoveryWatcher(serverRegistry, server);
 

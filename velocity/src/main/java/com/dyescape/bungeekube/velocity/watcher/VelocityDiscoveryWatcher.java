@@ -2,7 +2,7 @@ package com.dyescape.bungeekube.velocity.watcher;
 
 import com.dyescape.bungeekube.kubernetes.discovery.DiscoveredService;
 import com.dyescape.bungeekube.kubernetes.discovery.watcher.DiscoveryWatcher;
-import com.dyescape.bungeekube.velocity.registry.ServerRegistry;
+import com.dyescape.bungeekube.api.registry.ServerRegistry;
 
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.server.ServerInfo;

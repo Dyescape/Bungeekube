@@ -1,4 +1,4 @@
-package com.dyescape.bungeekube.velocity.registry;
+package com.dyescape.bungeekube.api.registry;
 
 import com.dyescape.bungeekube.kubernetes.discovery.DiscoveredService;
 
@@ -6,6 +6,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ServerRegistry {
+
+    private static ServerRegistry i = new ServerRegistry();
+    public static ServerRegistry get() { return i; }
+
+    private ServerRegistry() {
+
+    }
 
     private final Set<DiscoveredService> registeredServers = new HashSet<>();
     private final Set<DiscoveredService> registeredDefaultServers = new HashSet<>();
