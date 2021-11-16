@@ -40,7 +40,6 @@ public class KubernetesDiscoveryWatcher {
             if (!foundServices.contains(currentService)) {
                 iterator.remove();
                 this.handleDeletedService(currentService);
-                this.watcher.onDelete(currentService);
             }
         }
 
